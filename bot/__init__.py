@@ -377,12 +377,30 @@ try:
     RECURSIVE_SEARCH = RECURSIVE_SEARCH.lower() == 'true'
 except KeyError:
     RECURSIVE_SEARCH = False
+
+try:
+    GH_USERNAME = getConfig('GH_USERNAME')
+    if len(GH_USERNAME) == 0:
+        raise KeyError
+except KeyError:
+    GH_USERNAME = None
+
+try:
+    GH_TOKEN = getConfig('GH_TOKEN')
+    if len(GH_TOKEN) == 0:
+        raise KeyError
+except KeyError:
+    GH_TOKEN = None
+
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
         TOKEN_PICKLE_URL = None
     else:
-        res = requests.get(TOKEN_PICKLE_URL)
+        if GH_USERNAME and GH_TOKEN:
+            res = requests.get(TOKEN_PICKLE_URL, auth=(GH_USERNAME, GH_TOKEN))
+        else:
+            res = requests.get(TOKEN_PICKLE_URL)
         if res.status_code == 200:
             with open('token.pickle', 'wb+') as f:
                 f.write(res.content)
@@ -397,7 +415,10 @@ try:
     if len(ACCOUNTS_ZIP_URL) == 0:
         ACCOUNTS_ZIP_URL = None
     else:
-        res = requests.get(ACCOUNTS_ZIP_URL)
+        if GH_USERNAME and GH_TOKEN:
+            res = requests.get(ACCOUNTS_ZIP_URL, auth=(GH_USERNAME, GH_TOKEN))
+        else:
+            res = requests.get(ACCOUNTS_ZIP_URL)
         if res.status_code == 200:
             with open('accounts.zip', 'wb+') as f:
                 f.write(res.content)
@@ -405,7 +426,7 @@ try:
         else:
             logging.error(f"Failed to download accounts.zip {res.status_code}")
             raise KeyError
-        subprocess.run(["unzip", "-q", "-o", "accounts.zip"])
+        subprocess.run(["unzip", "-qoj", "accounts.zip", "-d", "accounts"])
         os.remove("accounts.zip")
 except KeyError:
     pass
@@ -414,7 +435,10 @@ try:
     if len(MULTI_SEARCH_URL) == 0:
         MULTI_SEARCH_URL = None
     else:
-        res = requests.get(MULTI_SEARCH_URL)
+        if GH_USERNAME and GH_TOKEN:
+            res = requests.get(MULTI_SEARCH_URL, auth=(GH_USERNAME, GH_TOKEN))
+        else:
+            res = requests.get(MULTI_SEARCH_URL)
         if res.status_code == 200:
             with open('drive_folder', 'wb+') as f:
                 f.write(res.content)
