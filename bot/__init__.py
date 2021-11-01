@@ -448,6 +448,14 @@ if SEARCH_PLUGINS is not None:
     qbclient = get_client()
     qbclient.search_install_plugin(SEARCH_PLUGINS)
 
+try:
+    EXCLUDE_FILE_EXT = getConfig('EXCLUDE_FILE_EXT')
+    if len(EXCLUDE_FILE_EXT) == 0:
+        raise KeyError
+    EXCLUDE_FILE_EXT = EXCLUDE_FILE_EXT.strip().split()
+except KeyError:
+    EXCLUDE_FILE_EXT = []
+
 updater = tg.Updater(token=BOT_TOKEN, request_kwargs={'read_timeout': 30, 'connect_timeout': 15})
 bot = updater.bot
 dispatcher = updater.dispatcher
