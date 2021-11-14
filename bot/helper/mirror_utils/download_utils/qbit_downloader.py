@@ -15,7 +15,7 @@ from torrentool.api import Torrent
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CallbackQueryHandler
 
-from bot import download_dict, download_dict_lock, BASE_URL, dispatcher, get_client, TORRENT_DIRECT_LIMIT, ZIP_UNZIP_LIMIT, STOP_DUPLICATE, EXCLUDE_FILE_EXT
+from bot import download_dict, download_dict_lock, BASE_URL, dispatcher, get_client, TORRENT_DIRECT_LIMIT, ZIP_UNZIP_LIMIT, STOP_DUPLICATE
 from bot.helper.mirror_utils.status_utils.qbit_download_status import QbDownloadStatus
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.telegram_helper.message_utils import *
@@ -216,7 +216,7 @@ class QbitTorrent:
                 if self.qbitsel:
                     for dirpath, subdir, files in os.walk(f"{self.dire}", topdown=False):
                         for filee in files:
-                            if filee.endswith(tuple(['.!qB'] + EXCLUDE_FILE_EXT)):
+                            if filee.endswith(('.!qB', '.txt', '.ink', '.html', '.nfo')):
                                 os.remove(os.path.join(dirpath, filee))
                         for folder in subdir:
                             if folder == ".unwanted":
@@ -227,7 +227,7 @@ class QbitTorrent:
                 if not self.qbitsel:
                     for dirpath, subdir, files in os.walk(f"{self.dire}", topdown=False):
                         for filee in files:
-                            if filee.endswith(tuple(EXCLUDE_FILE_EXT)):
+                            if filee.endswith(('.txt', '.ink', '.html', '.nfo')):
                                 os.remove(os.path.join(dirpath, filee))
                         for folder in subdir:
                             if folder == ".unwanted":
